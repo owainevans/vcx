@@ -20,7 +20,7 @@ except:
     
 class MakeFakeRIPL:
     def __init__(self):
-        self.id = 237
+        self.id = np.random.randint(10**4)
         self.direcs = {'id':self.id}
         self.direc_count = 0
         print 'Made FakeRIPL, id: %i' % self.id
@@ -38,29 +38,29 @@ class MakeFakeRIPL:
         return None
         
     def assume(self,variable,exp):
-        print 'V %i' % self.id
-        print 'ASSUME '+str(variable)+' '+str(exp)
+        #print 'V %i' % self.id
+        #print 'ASSUME '+str(variable)+' '+str(exp)
         self.add(('assume',[variable,exp] ) )
         return variable,exp
     
     def observe(self,exp1,exp2):
-        print 'V %i' % self.id
-        print 'obs '+ str(exp1)+'   '+str(exp2)
+        #print 'V %i' % self.id
+        #print 'obs '+ str(exp1)+'   '+str(exp2)
         self.add(('observe',[exp1,exp2] ) )
         return exp1,exp2
         
     def predict(self,exp):
-        print 'pred '+ str(exp)
+        #print 'pred '+ str(exp)
         self.add(('predict',[exp] ) )
         return exp
         
     def infer(self,exp):
-        print 'inf '+ str(exp)
+        #print 'inf '+ str(exp)
         self.add(('infer',[exp] ) )
         return exp
         
     def clear(self):
-        print 'clear'
+        #print 'clear'
         self.direcs.clear(); self.direc_count = 0
         return None
         
@@ -87,7 +87,46 @@ class VentureMagics(Magics):
             except:
                 print 'no vent instance created'
                 
-    
+                
+    @cell_magic
+    def vp(self, line, cell):
+        
+        terse=0
+        if line:
+            if line.lower().strip().find('as') > -1: terse=1 
+        
+        # code in v.assume py form
+        py_lines = self.cell_to_venture(cell,terse) 
+        
+        fake_outs = [];
+        for py_line in py_lines:
+            fake_outs.append( eval(py_line) )
+        
+        if self.vent_state == 'vxx':
+            vxx_outs = []
+            for py_line in py_lines:
+                vxx_outs.append( eval(py_line.replace('self.v.','self.vxx.')) )
+            vouts = vxx_outs  
+        
+        if self.vent_state == 'v2':
+            v2_outs = []
+            for py_line in py_lines:
+                v2_outs.append( eval(py_line.replace('self.v.','self.v2.')) )  
+            vouts = v2_outs                        
+        
+        # output the converted lines that are fed to python        
+        py_lines_clean = [py_line.replace('self.v.','vxx.') for py_line in py_lines]
+       
+       #verbose mode (extra output)
+        if line.lower().strip() == '-v':
+            return 'cell:',cell,'\n py_lines:', py_lines,'\n fake_outs:',fake_outs,'\n vouts:',vouts                                                         
+        
+        #non_verbose mode
+        else:
+            return py_lines_clean,vouts
+        
+                                                               
+                                                                        
     @cell_magic
     def vl(self, line, cell):
         
@@ -112,42 +151,9 @@ class VentureMagics(Magics):
             fake_outs,'%s' % self.vent_state,'vouts:',vouts                                                         
         else:
             return '%s' % self.vent_state,vouts
-                
-                
-    @cell_magic
-    def vp(self, line, cell):
-        
-        terse=0
-        if line:
-            if line.lower().strip().find('as') > -1: terse=1 
-        
-        py_lines = self.cell_to_venture(cell,terse) # code in v.assume py form
-        
-        fake_outs = [];
-        for py_line in py_lines:
-            fake_outs.append( eval(py_line) )
-        
-        if self.vent_state == 'vxx':
-            vxx_outs = []
-            for py_line in py_lines:
-                vxx_outs.append( eval(py_line.replace('self.v.','self.vxx.')) )
-            vouts = vxx_outs  
-        
-        if self.vent_state == 'v2':
-            v2_outs = []
-            for py_line in py_lines:
-                v2_outs.append( eval(py_line.replace('self.v.','self.v2.')) )  
-            vouts = v2_outs                        
-       
-       #verbose mode
-        if line.lower().strip() == '-v':
-            return 'cell:',cell,'py_lines:', py_lines,'fake_outs:',
-            fake_outs,'%s' % self.vent_state,'vouts:',vouts                                                         
-        else:
-            return '%s' % self.vent_state,vouts
-        
-        
-        
+            
+                                                                                            
+                                                                                                                                                                                                                                                            
     def remove_white(self,s):
         t=s.replace('  ',' ')
         return s if s==t else self.remove_white(t)
