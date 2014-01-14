@@ -108,13 +108,14 @@ class VentureMagics(Magics):
        
        #verbose mode
         if line.lower().strip() == '-v':
-            return 'cell:',cell,'cell2ven:', py_lines,'fake_outs:',fake_outs,'vouts:',vouts                                                         
+            return 'cell:',cell,'cell2ven:', py_lines,'fake_outs:',
+            fake_outs,'%s' % self.vent_state,'vouts:',vouts                                                         
         else:
-            return line,'%s' % self.vent_state,vouts
+            return '%s' % self.vent_state,vouts
                 
                 
     @cell_magic
-    def vent(self, line, cell):
+    def vp(self, line, cell):
         
         terse=0
         if line:
@@ -140,7 +141,8 @@ class VentureMagics(Magics):
        
        #verbose mode
         if line.lower().strip() == '-v':
-            return 'cell:',cell,'py_lines:', py_lines,'fake_outs:',fake_outs,'vouts:',vouts                                                         
+            return 'cell:',cell,'py_lines:', py_lines,'fake_outs:',
+            fake_outs,'%s' % self.vent_state,'vouts:',vouts                                                         
         else:
             return '%s' % self.vent_state,vouts
         
