@@ -4,14 +4,21 @@ Ipython cell magic for venture
 1. Get IPython 1.x (latest stable version).
 
 2. Copy vent_magic.py to IPython profile startup directory. Try following
-at the terminal to get config: 'ipython locate config'
+at the terminal to get config: 
+'ipython locate config'.
+
 Then find the 'startup' folder. On my Ubuntu 1204 the full directory is:
+
 ~/.config/ipython/profile_default/startup
+
 
 3. Cell magics are '%%vl' and '%%vp'. Currently one must use '%%vp', which 
 converts as follows:
+
 [ASSUME x 1] -> ripl.assume('x','1')
+
 Note that OBSERVE only works when its first argument is a variable.
+
 
 
 4. Code example:
