@@ -21,7 +21,7 @@ In[1]:
 %%vp
 [clear]
 [assume y (beta 1 5) ]
-[assume z (and (flip y) (flip y))]
+[assume z (flip y) ]
 [observe z true]
 [infer 100]
 [predict y]
