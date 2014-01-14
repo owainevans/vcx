@@ -86,7 +86,19 @@ class VentureMagics(Magics):
                 self.vent_state = 'v2'
             except:
                 print 'no vent instance created'
-                
+    
+    @line_cell_magic
+    def lv(line, cell=None):
+        "Magic that works both as %lcmagic and as %%lcmagic"
+        if cell is None:
+            py_lines = self.cell_to_venture(line,terse)
+            print py_lines
+            #eval(py_lines[0])
+            return py_lines[0]
+        else:
+            print "Called as cell magic"
+            return line, cell
+            
                 
     @cell_magic
     def vp(self, line, cell):
