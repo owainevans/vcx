@@ -4,8 +4,7 @@ Ipython cell magic for venture
 1. Get IPython 1.x (latest stable version).
 
 2. Copy vent_magic.py to IPython profile startup directory. Try following
-at the terminal to get config:
->>> ipython locate config
+at the terminal to get config: 'ipython locate config'
 Then find the 'startup' folder. On my Ubuntu 1204 the full directory is:
 ~/.config/ipython/profile_default/startup
 
