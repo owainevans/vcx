@@ -87,23 +87,31 @@ class VentureMagics(Magics):
             except:
                 print 'no vent instance created'
     
+    
     @line_cell_magic
-    def lvp(self, line, cell=None):
+    def vp(self, line, cell=None):
+        
         if cell is None:
-            py_lines = self.cell_to_venture(line)
             
+            py_lines = self.cell_to_venture(line)
             fake_outs = eval(py_lines[0])
             
-            vouts = eval(py_lines[0].replace('self.v.','self.v2.'))
+            if self.vent_state == 'vxx':
+                vouts = eval(py_lines[0].replace('self.v.','self.vxx.'))
             
+            if self.vent_state == 'v2':
+                vouts = eval(py_lines[0].replace('self.v.','self.v2.'))
+                
             print vouts  # just to see venture output on loops
-            return py_lines[0], vouts
+            return py_lines[0].replace('self.v.','vxx.'), vouts
+            
+            
         else:
-            return self.vp(line,cell)
+            return self.cell_vp(line,cell)
             
                 
     @cell_magic
-    def vp(self, line, cell):
+    def cell_vp(self, line, cell):
         
         terse=0
         if line:
