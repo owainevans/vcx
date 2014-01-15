@@ -89,12 +89,14 @@ class VentureMagics(Magics):
     
     @line_cell_magic
     def lvp(self, line, cell=None):
-        "Magic that works both as %lcmagic and as %%lcmagic"
         if cell is None:
             py_lines = self.cell_to_venture(line)
+            
             fake_outs = eval(py_lines[0])
+            
             vouts = eval(py_lines[0].replace('self.v.','self.v2.'))
-            print vouts
+            
+            print vouts  # just to see venture output on loops
             return py_lines[0], vouts
         else:
             return self.vp(line,cell)
