@@ -8,27 +8,28 @@ except:
     from IPython.core.magic import (register_cell_magic, magics_class, line_magic,
                                     cell_magic, line_cell_magic)                           
 
+found_venture_ripl = 0
+
 try: 
     from venture.shortcuts import *
-    print 'found v.shortcuts'    
+    ipy_ripl = make_church_prime_ripl()
+    found_venture_ripl = 1
 except:
     try:
         import venture.engine as v2
-        print 'found veng'
+        print 'found veng'; found_venture_ripl = 1
     except:
-        print 'no venture found'                              
-    
+        print 'failed to make venture ripl'
+        
+
 class MakeFakeRIPL:
     def __init__(self):
         self.id = np.random.randint(10**4)
         self.direcs = {'id':self.id}
         self.direc_count = 0
-        print 'Made FakeRIPL, id: %i' % self.id
         
     def add(self,directive):
         tag,arglist = directive
-        #if arglist[0] in [self.direcs[k][0] for k in self.direcs.keys() if k[0]=='a']:
-        #    print 'Attempt to define same var twice!'
         self.direcs[tag+str(self.direc_count)] = arglist
         self.direc_count += 1
         return None
@@ -38,13 +39,11 @@ class MakeFakeRIPL:
         return None
         
     def assume(self,variable,exp):
-        #print 'V %i' % self.id
         #print 'ASSUME '+str(variable)+' '+str(exp)
         self.add(('assume',[variable,exp] ) )
         return variable,exp
     
     def observe(self,exp1,exp2):
-        #print 'V %i' % self.id
         #print 'obs '+ str(exp1)+'   '+str(exp2)
         self.add(('observe',[exp1,exp2] ) )
         return exp1,exp2
@@ -65,9 +64,7 @@ class MakeFakeRIPL:
         return None
         
     
-        
-    
-    
+
 @magics_class
 class VentureMagics(Magics):
 
@@ -90,7 +87,22 @@ class VentureMagics(Magics):
     
     @line_cell_magic
     def vl(self, line, cell=None):
+        '''VentureMagics creates a RIPL on IPython startupt called ipy_ripl.
+        You can use the RIPL via Python:
+           ipy_ripl.assume('coin','(beta 1 1)')
         
+        You can also use the RIPL via magic commands. Use %vl for single
+        lines:
+           %vl [ASSUME coin (beta 1 1)]
+
+        This magic can take Python expansions:
+           %vl [ASSUME coin {np.random.beta(1,1)} ]
+
+        Use the cell magic %%vl for multi-line input:
+           %%vl
+           [ASSUME coin (beta 1 1)]
+           [ASSUME x (flip coin)]'''
+           
         if cell is None:
             
             py_lines = self.cell_to_venture(line)
@@ -112,7 +124,7 @@ class VentureMagics(Magics):
             fake_outs = eval(py_lines[0])
             
             if self.vent_state == 'vxx':
-                vouts = self.vxx.execute_instruction(str(cell), params=None)
+                vouts = self.vxx.execute_program( str(cell), params=None )
                 
             if self.vent_state == 'v2':
                 vouts = self.v2.load( str(cell) )   
@@ -271,8 +283,9 @@ def load_ipython_extension(ip):
 try:
     ip = get_ipython()
     ip.register_magics(VentureMagics)
-    print 'ip=get_ipython() ran'
+    ip_register_success = 1
+
 except:
     print 'ip=get_ipython() didnt run'   
 
-print 'VentureMagics is active'
+if found_venture_ripl==1: print 'VentureMagics is active: see %vl? for docs'
