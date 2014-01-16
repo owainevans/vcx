@@ -89,6 +89,44 @@ class VentureMagics(Magics):
     
     
     @line_cell_magic
+    def vl(self, line, cell=None):
+        
+        if cell is None:
+            
+            py_lines = self.cell_to_venture(line)
+            fake_outs = eval(py_lines[0])
+            
+            if self.vent_state == 'vxx':
+                vouts = self.vxx.execute_instruction(str(line), params=None)
+                
+            if self.vent_state == 'v2':
+                vouts = self.v2.load( str(line) )   
+                
+            print vouts  # just to see venture output on loops
+            return vouts
+            
+            
+        else:
+            
+            py_lines = self.cell_to_venture(cell)
+            fake_outs = eval(py_lines[0])
+            
+            if self.vent_state == 'vxx':
+                vouts = self.vxx.execute_instruction(str(cell), params=None)
+                
+            if self.vent_state == 'v2':
+                vouts = self.v2.load( str(cell) )   
+                
+            print vouts  # just to see venture output on loops
+            return vouts
+            
+            return vouts
+    
+    
+    
+    
+    
+    @line_cell_magic
     def vp(self, line, cell=None):
         
         if cell is None:
@@ -149,31 +187,31 @@ class VentureMagics(Magics):
         
                                                                
                                                                         
-    @cell_magic
-    def vl(self, line, cell):
-        
-        py_lines = self.cell_to_venture(cell)
-        
-        fake_outs = [];
-        for py_line in py_lines:
-            fake_outs.append( eval(py_line) )
-        
-        if self.vent_state == 'vxx':
-            vxx_outs = []
-            for py_line in py_lines:
-                vxx_outs.append( eval(py_line.replace('self.v.','self.vxx.')) )
-            vouts = vxx_outs  
-        
-        if self.vent_state == 'v2': 
-            vouts = self.v2.load(cell)                        
-       
-       #verbose mode
-        if line.lower().strip() == '-v':
-            return 'cell:',cell,'cell2ven:', py_lines,'fake_outs:',
-            fake_outs,'%s' % self.vent_state,'vouts:',vouts                                                         
-        else:
-            return '%s' % self.vent_state,vouts
-            
+    #@cell_magic
+    #def vl(self, line, cell):
+    #    
+    #    py_lines = self.cell_to_venture(cell)
+    #    
+    #    fake_outs = [];
+    #    for py_line in py_lines:
+    #        fake_outs.append( eval(py_line) )
+    #    
+    #    if self.vent_state == 'vxx':
+    #        vxx_outs = []
+    #        for py_line in py_lines:
+    #            vxx_outs.append( eval(py_line.replace('self.v.','self.vxx.')) )
+    #        vouts = vxx_outs  
+    #    
+    #    if self.vent_state == 'v2': 
+    #        vouts = self.v2.load(cell)                        
+    #   
+    #   #verbose mode
+    #    if line.lower().strip() == '-v':
+    #        return 'cell:',cell,'cell2ven:', py_lines,'fake_outs:',
+    #        fake_outs,'%s' % self.vent_state,'vouts:',vouts                                                         
+    #    else:
+    #        return '%s' % self.vent_state,vouts
+    #        
                                                                                             
                                                                                                                                                                                                                                                             
     def remove_white(self,s):
