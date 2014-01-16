@@ -84,6 +84,20 @@ class VentureMagics(Magics):
             except:
                 print 'no vent instance created'
     
+
+    def clean(self,p_line):
+        st = p_line
+        arg = st.find( "(" )
+        two_end = st.find( "', ",arg)
+        one_end = st.rfind( ")",arg)
+        if two_end > -1:
+            return st[arg+2:two_end]
+        elif one_end > -1:
+            return st[arg+2:one_end-1]
+        else:
+            return None
+
+
     
     @line_cell_magic
     def vl(self, line, cell=None):
@@ -113,8 +127,12 @@ class VentureMagics(Magics):
                 
             if self.vent_state == 'v2':
                 vouts = self.v2.load( str(line) )   
-                
-            print vouts  # just to see venture output on loops
+            
+            # for 'assume', want the variable, directive, computed value
+            # for 'observe', want the exp1, directive, computed value
+            # for 'predict', want the expression and the computed value.
+            
+            print self.clean(py_lines[0]), vouts['value']['value'] 
             return vouts
             
             
@@ -129,8 +147,9 @@ class VentureMagics(Magics):
             if self.vent_state == 'v2':
                 vouts = self.v2.load( str(cell) )   
                 
-            print vouts  # just to see venture output on loops
-            return vouts
+            for pyline,vline in zip(py_lines,vouts):
+                print self.clean(pyline),vline['value']['value']
+
             
             return vouts
     
@@ -248,12 +267,12 @@ class VentureMagics(Magics):
             if tag=='assume':
                 var=line[1:].split()[1]
                 exp = ' '.join( line[1:].split()[2:] )
-                v_ls.append( "self.v.assume('%s','%s')" % ( var, exp ) )
+                v_ls.append( "self.v.assume('%s', '%s')" % ( var, exp ) )
                 
             elif tag=='observe':
                 var=line[1:].split()[1]
                 exp = ' '.join( line[1:].split()[2:] )
-                v_ls.append( "self.v.observe('%s','%s')" % ( var, exp ) )
+                v_ls.append( "self.v.observe('%s', '%s')" % ( var, exp ) )
             
             elif tag=='predict':
                 exp = ' '.join( line[1:].split()[1:] )
@@ -272,7 +291,7 @@ class VentureMagics(Magics):
         return v_ls
     
     
-    
+# st[arg:st[:arg].find( ", "
     
     
     ## for ipythonNB, remove function defintion and uncomment following two lines
@@ -289,3 +308,15 @@ except:
     print 'ip=get_ipython() didnt run'   
 
 if found_venture_ripl==1: print 'VentureMagics is active: see %vl? for docs'
+
+def clean(p_line):
+    st = p_line
+    arg = st.find( "(" )
+    two_end = st.find( "', ",arg)
+    one_end = st.rfind( ")",arg)
+    if two_end > -1:
+        return st[arg+2:two_end]
+    elif one_end > -1:
+        return st[arg+2:one_end]
+    else:
+        return None
