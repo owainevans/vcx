@@ -134,13 +134,14 @@ class VentureMagics(Magics):
             
             for key in py_parts:
                 print py_parts[key]
+
             print vouts['value']['value'] 
             return vouts
             
             
         else:
             
-            py_lines = self.cell_to_venture(cell)
+            py_lines,py_parts = self.cell_to_venture(cell)
             #fake_outs = eval(py_lines[0])
             
             if self.vent_state == 'vxx':
@@ -151,8 +152,8 @@ class VentureMagics(Magics):
                 
             for key in py_parts:
                 print py_parts[key]
-            print vouts['value']['value'] 
-                        
+
+            print vouts['value']['value']
             return vouts
     
     
