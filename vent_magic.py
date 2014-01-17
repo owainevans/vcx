@@ -119,7 +119,7 @@ class VentureMagics(Magics):
            
         if cell is None:
             
-            py_lines = self.cell_to_venture(line)
+            py_lines,py_parts = self.cell_to_venture(line)
             fake_outs = eval(py_lines[0])
             
             if self.vent_state == 'vxx':
@@ -132,7 +132,7 @@ class VentureMagics(Magics):
             # for 'observe', want the exp1, directive, computed value
             # for 'predict', want the expression and the computed value.
             
-            print self.clean(py_lines[0]), vouts['value']['value'] 
+            print py_parts, vouts['value']['value'] 
             return vouts
             
             
@@ -257,9 +257,12 @@ class VentureMagics(Magics):
         s = s[:s.rfind(']')]
         ls = s.split(']')
         ls = [ self.remove_white(line.replace('\n','')) for line in ls]
+
+        # venture lines in python form, and dict of components of lines
         v_ls = []
+        v_ls_d = {}
         
-        for line in ls:
+        for count,line in enumerate(ls):
             if terse==1: line = '[ASSUME '+line[1:]
             
             lparen = line.find('[')        
@@ -269,27 +272,28 @@ class VentureMagics(Magics):
                 var=line[1:].split()[1]
                 exp = ' '.join( line[1:].split()[2:] )
                 v_ls.append( "self.v.assume('%s', '%s')" % ( var, exp ) )
+                v_ls_d[count] = (tag,var,exp)
                 
             elif tag=='observe':
                 var=line[1:].split()[1]
                 exp = ' '.join( line[1:].split()[2:] )
                 v_ls.append( "self.v.observe('%s', '%s')" % ( var, exp ) )
-            
+                v_ls_d[count] = (tag,var,exp)
             elif tag=='predict':
                 exp = ' '.join( line[1:].split()[1:] )
                 v_ls.append( "self.v.predict('%s')" % exp  )
-                
+                v_ls_d[count] = (tag,exp)
             elif tag=='infer':
                 num = line[1:].split()[1]
                 v_ls.append( "self.v.infer(%i)" % int(num) )
-            
+                v_ls_d[count] = (tag,num)
             elif tag=='clear':
                 v_ls.append( "self.v.clear()" )
-            
+                v_ls_d[count] = (tag)
             else:
                 assert 0==1,"Did not recognize directive"
         
-        return v_ls
+        return v_ls,v_ls_d
     
     
 # st[arg:st[:arg].find( ", "
