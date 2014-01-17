@@ -9,7 +9,7 @@ at the terminal to get config:
 
 Then find the 'startup' folder. On my Ubuntu 1204 the full directory is:
 
-     ~/.config/ipython/profile_default/startup
+      ~/.config/ipython/profile_default/startup
 
 If you now open a new IPython terminal, you should get this  message:
 
