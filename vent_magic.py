@@ -88,6 +88,10 @@ class VentureMagics(Magics):
            %%vl
            [ASSUME coin (beta 1 1)]
            [ASSUME x (flip coin)]'''
+
+
+        def format_parts(parts):
+            return '[%s]' % ' '.join(parts)
            
         
         ## LINE MAGIC
@@ -97,7 +101,7 @@ class VentureMagics(Magics):
             py_lines,py_parts = self.cell_to_venture(line)
             
             for key in py_parts:
-                print py_parts[key]
+                print format_parts(py_parts[key])
                  
             if 'value' in vouts: print vouts['value'].get('value',None)
 
@@ -110,7 +114,7 @@ class VentureMagics(Magics):
             py_lines,py_parts = self.cell_to_venture(cell)
                               
             for count,v_line in enumerate(vouts):
-                print py_parts[count]
+                print format_parts(py_parts[count])
                 if 'value' in v_line: print v_line['value'].get('value',None)
 
             return vouts
@@ -225,9 +229,14 @@ class VentureMagics(Magics):
                 v_ls_d[count] = (tag,num)
             elif tag=='clear':
                 v_ls.append( "self.v.clear()" )
-                v_ls_d[count] = (tag)
+                v_ls_d[count] = (tag,'')   # comes with empty string for simplcity
             else:
                 assert 0==1,"Did not recognize directive"
+        
+        #make tag upper
+        for key in v_ls_d.keys():
+            old = v_ls_d[key]
+            v_ls_d[key] = (old[0].upper(),) + old[1:]
         
         return v_ls,v_ls_d
     
