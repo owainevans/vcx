@@ -70,35 +70,7 @@ class VentureMagics(Magics):
 
     def __init__(self, shell):
         super(VentureMagics, self).__init__(shell)
-        
-        self.v = MakeFakeRIPL()  # always make fake ripl
-        self.vent_state = 'no vent'
-        
-        try:
-            self.vxx = make_church_prime_ripl()
-            self.vent_state = 'vxx'
-        except:
-            try:
-                self.v2 = v2
-                self.vent_state = 'v2'
-            except:
-                print 'no vent instance created'
-    
 
-    def clean(self,p_line):
-        st = p_line
-        arg = st.find( "(" )
-        two_end = st.find( "', ",arg)
-        one_end = st.rfind( ")",arg)
-        if two_end > -1:
-            return st[arg+2:two_end]
-        elif one_end > -1:
-            return st[arg+2:one_end-1]
-        else:
-            return None
-
-
-    
     @line_cell_magic
     def vl(self, line, cell=None):
         '''VentureMagics creates a RIPL on IPython startupt called ipy_ripl.
@@ -117,42 +89,28 @@ class VentureMagics(Magics):
            [ASSUME coin (beta 1 1)]
            [ASSUME x (flip coin)]'''
            
+        
+        ## LINE MAGIC
         if cell is None:
-            
+            vouts = self.vxx.execute_instruction(str(line), params=None)
+
             py_lines,py_parts = self.cell_to_venture(line)
-            #fake_outs = eval(py_lines[0])
-            
-            if self.vent_state == 'vxx':
-                vouts = self.vxx.execute_instruction(str(line), params=None)
-                
-            if self.vent_state == 'v2':
-                vouts = self.v2.load( str(line) )   
-            
-            # for 'assume', want the variable, directive, computed value
-            # for 'observe', want the exp1, directive, computed value
-            # for 'predict', want the expression and the computed value.
             
             for key in py_parts:
                 print py_parts[key]
-
-            print vouts['value']['value'] 
+                                
+            print vouts.get('value',None).get('value',None)
             return vouts
             
-            
+        ## CELL MAGIC    
         else:
-            
+            vouts = self.vxx.execute_program( str(cell), params=None )
+
             py_lines,py_parts = self.cell_to_venture(cell)
-            #fake_outs = eval(py_lines[0])
-            
-            if self.vent_state == 'vxx':
-                vouts = self.vxx.execute_program( str(cell), params=None )
-                
-            if self.vent_state == 'v2':
-                vouts = self.v2.load( str(cell) )   
-                
+                              
             for count,v_line in enumerate(vouts):
                 print py_parts[count]
-                print v_line['value']['value']
+                print vouts.get('value',None).get('value',None)
 
             return vouts
     
@@ -160,6 +118,7 @@ class VentureMagics(Magics):
     
     
     
+
     @line_cell_magic
     def vp(self, line, cell=None):
         
@@ -220,33 +179,7 @@ class VentureMagics(Magics):
             return py_lines_clean,vouts
         
                                                                
-                                                                        
-    #@cell_magic
-    #def vl(self, line, cell):
-    #    
-    #    py_lines = self.cell_to_venture(cell)
-    #    
-    #    fake_outs = [];
-    #    for py_line in py_lines:
-    #        fake_outs.append( eval(py_line) )
-    #    
-    #    if self.vent_state == 'vxx':
-    #        vxx_outs = []
-    #        for py_line in py_lines:
-    #            vxx_outs.append( eval(py_line.replace('self.v.','self.vxx.')) )
-    #        vouts = vxx_outs  
-    #    
-    #    if self.vent_state == 'v2': 
-    #        vouts = self.v2.load(cell)                        
-    #   
-    #   #verbose mode
-    #    if line.lower().strip() == '-v':
-    #        return 'cell:',cell,'cell2ven:', py_lines,'fake_outs:',
-    #        fake_outs,'%s' % self.vent_state,'vouts:',vouts                                                         
-    #    else:
-    #        return '%s' % self.vent_state,vouts
-    #        
-                                                                                            
+                                                                                                                                                            
                                                                                                                                                                                                                                                             
     def remove_white(self,s):
         t=s.replace('  ',' ')
@@ -298,7 +231,7 @@ class VentureMagics(Magics):
         return v_ls,v_ls_d
     
     
-# st[arg:st[:arg].find( ", "
+
     
     
     ## for ipythonNB, remove function defintion and uncomment following two lines
