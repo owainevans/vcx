@@ -132,8 +132,9 @@ class VentureMagics(Magics):
             # for 'observe', want the exp1, directive, computed value
             # for 'predict', want the expression and the computed value.
             
-
-            print py_parts, vouts['value']['value'] 
+            for key in py_parts:
+                print py_parts[key]
+            print vouts['value']['value'] 
             return vouts
             
             
@@ -148,11 +149,10 @@ class VentureMagics(Magics):
             if self.vent_state == 'v2':
                 vouts = self.v2.load( str(cell) )   
                 
-            for pyline,vline in zip(py_lines,vouts):
-                print pyline,vline
-                print self.clean(pyline),vline['value']['value']
-
-            
+            for key in py_parts:
+                print py_parts[key]
+            print vouts['value']['value'] 
+                        
             return vouts
     
     
