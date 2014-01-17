@@ -120,7 +120,7 @@ class VentureMagics(Magics):
         if cell is None:
             
             py_lines,py_parts = self.cell_to_venture(line)
-            fake_outs = eval(py_lines[0])
+            #fake_outs = eval(py_lines[0])
             
             if self.vent_state == 'vxx':
                 vouts = self.vxx.execute_instruction(str(line), params=None)
@@ -141,7 +141,7 @@ class VentureMagics(Magics):
         else:
             
             py_lines = self.cell_to_venture(cell)
-            fake_outs = eval(py_lines[0])
+            #fake_outs = eval(py_lines[0])
             
             if self.vent_state == 'vxx':
                 vouts = self.vxx.execute_program( str(cell), params=None )
