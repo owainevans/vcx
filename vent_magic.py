@@ -98,8 +98,9 @@ class VentureMagics(Magics):
             
             for key in py_parts:
                 print py_parts[key]
-                                
-            print vouts.get('value',None).get('value',None)
+                 
+            if 'value' in vouts: print vouts['value'].get('value',None)
+
             return vouts
             
         ## CELL MAGIC    
@@ -110,7 +111,7 @@ class VentureMagics(Magics):
                               
             for count,v_line in enumerate(vouts):
                 print py_parts[count]
-                print vouts.get('value',None).get('value',None)
+                if 'value' in v_line: print v_line['value'].get('value',None)
 
             return vouts
     
