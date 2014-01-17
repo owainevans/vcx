@@ -4,8 +4,7 @@ Ipython cell magic for venture
 <ol><li> Get IPython 1.x (latest stable version).
 
 <li>Copy vent_magic.py to IPython profile startup directory. Try following
-at the terminal to get config: 
-   ipython locate config
+at the terminal to get config: <code>ipython locate config</code>
 
 Then find the 'startup' folder. On my Ubuntu 1204 the full directory is:
 
@@ -13,7 +12,7 @@ Then find the 'startup' folder. On my Ubuntu 1204 the full directory is:
 
 If you now open a new IPython terminal, you should get this  message:
 
-   VentureMagics is active: see %vl? for docs
+  <b>VentureMagics is active: see %vl? for docs</b>
 
 
 
