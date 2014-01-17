@@ -132,6 +132,7 @@ class VentureMagics(Magics):
             # for 'observe', want the exp1, directive, computed value
             # for 'predict', want the expression and the computed value.
             
+
             print py_parts, vouts['value']['value'] 
             return vouts
             
