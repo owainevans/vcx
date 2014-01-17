@@ -92,7 +92,7 @@ class VentureMagics(Magics):
         
         ## LINE MAGIC
         if cell is None:
-            vouts = self.vxx.execute_instruction(str(line), params=None)
+            vouts = ipy_ripl.execute_instruction(str(line), params=None)
 
             py_lines,py_parts = self.cell_to_venture(line)
             
@@ -104,7 +104,7 @@ class VentureMagics(Magics):
             
         ## CELL MAGIC    
         else:
-            vouts = self.vxx.execute_program( str(cell), params=None )
+            vouts = ipy_ripl.execute_program( str(cell), params=None )
 
             py_lines,py_parts = self.cell_to_venture(cell)
                               
