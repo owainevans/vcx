@@ -148,6 +148,7 @@ class VentureMagics(Magics):
                 vouts = self.v2.load( str(cell) )   
                 
             for pyline,vline in zip(py_lines,vouts):
+                print pyline,vline
                 print self.clean(pyline),vline['value']['value']
 
             
