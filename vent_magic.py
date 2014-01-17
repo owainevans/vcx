@@ -150,10 +150,10 @@ class VentureMagics(Magics):
             if self.vent_state == 'v2':
                 vouts = self.v2.load( str(cell) )   
                 
-            for key in py_parts:
-                print py_parts[key]
+            for count,v_line in enumerate(vouts):
+                print py_parts[count]
+                print v_line['value']['value']
 
-            print vouts['value']['value']
             return vouts
     
     
